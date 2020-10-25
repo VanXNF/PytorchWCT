@@ -8,7 +8,7 @@ import torchvision.datasets as datasets
 from Loader import Dataset
 from util import *
 import scipy.misc
-from torch.utils.serialization import load_lua
+import torchfile
 import time
 
 parser = argparse.ArgumentParser(description='WCT Pytorch')
@@ -102,8 +102,9 @@ for i,(contentImg,styleImg,imname) in enumerate(loader):
     if (args.cuda):
         contentImg = contentImg.cuda(args.gpu)
         styleImg = styleImg.cuda(args.gpu)
-    cImg = Variable(contentImg,volatile=True)
-    sImg = Variable(styleImg,volatile=True)
+    with torch.no_grad():
+        cImg = Variable(contentImg)
+        sImg = Variable(styleImg)
     start_time = time.time()
     # WCT Style Transfer
     styleTransfer(cImg,sImg,imname,csF)
